@@ -3,9 +3,6 @@ package ir.alilo.hangman
 import ir.alilo.libgdxrtl.ArFont
 
 object Resources {
-    private val arFont = ArFont()
-    private fun String.asPersianGlyph() = arFont.getText(this)
-
     object Strings {
         const val keyboardFirstRow = "ضصثقفغعهخحجچ"
         const val keyboardSecondRow = "شسیبلئاتنمکگ"
@@ -44,5 +41,21 @@ object Resources {
         object Particles {
             const val flameParticle = "particles"
         }
+    }
+
+    private val arFont = ArFont()
+    private fun String.asPersianGlyph() = arFont.getText(this)
+    private fun Int.withPersianDigits(): String {
+        return "$this"
+            .replace('0', '۰')
+            .replace('1', '۱')
+            .replace('2', '۲')
+            .replace('3', '۳')
+            .replace('4', '۴')
+            .replace('5', '۵')
+            .replace('6', '۶')
+            .replace('7', '۷')
+            .replace('8', '۸')
+            .replace('9', '۹').asPersianGlyph()
     }
 }

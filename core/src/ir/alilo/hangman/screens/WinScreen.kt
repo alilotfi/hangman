@@ -17,6 +17,7 @@ class WinScreen(private val hangman: Hangman) : ScreenAdapter() {
     override fun show() {
         music = Gdx.audio.newMusic(Gdx.files.internal(Resources.Sounds.congrats))
         music.play()
+        music.isLooping = true
 
         effect = ParticleEffect()
         effect.load(

@@ -8,33 +8,53 @@ import ir.alilo.hangman.Resources
 
 
 class Keyboard(
-    font: BitmapFont,
-    private val listener: KeyboardListener,
+    private val font: BitmapFont,
+    listener: KeyboardListener,
     private val hasSpace: Boolean = true,
-    private val hasDelete: Boolean = true
+    private val hasDelete: Boolean = true,
+    private val willButtonsDisappear: Boolean = false
 ) : Table() {
-    private val letters: List<List<Char>> = listOf(
-        Resources.Strings.keyboardFirstRow.toList(),
-        Resources.Strings.keyboardSecondRow.toList(),
-        Resources.Strings.keyboardThirdRow.toList()
-    )
+    private val buttons: List<List<ButtonVisibility>>
+    private val visibilityControllerListener = VisibilityControllerListener(listener)
 
     init {
-        addButtons(font).toList()
+        val letters: List<List<Char>> = listOf(
+            Resources.Strings.keyboardFirstRow.toList(),
+            Resources.Strings.keyboardSecondRow.toList(),
+            Resources.Strings.keyboardThirdRow.toList()
+        )
+        buttons = letters.map { row ->
+            row.map { char ->
+                ButtonVisibility(char, true)
+            }
+        }
+
+        addButtons()
         setFillParent(true)
         bottom()
     }
 
-    private fun addButtons(font: BitmapFont): MutableList<KeyboardButton> {
+    private fun addButtons(): MutableList<KeyboardButton> {
+        clear()
         val buttonSize = calculateButtonSize()
         val style = KeyboardButton.buildStyle(font)
-        val buttons = mutableListOf<KeyboardButton>()
-        letters.forEachIndexed { rowIndex, row ->
+        val keyboardButtons = mutableListOf<KeyboardButton>()
+        buttons.forEachIndexed { rowIndex, row ->
             addSpaceIfNeeded(buttonSize, style, rowIndex)
             row.forEach { character ->
-                val button =
-                    KeyboardButton(character, KeyboardButtonType.CHARACTER, style, listener)
-                add(button).width(buttonSize).height(buttonSize).spaceLeft(MARGIN)
+                val cell = if (character.visible) {
+                    add(
+                        KeyboardButton(
+                            character.char,
+                            KeyboardButtonType.CHARACTER,
+                            style,
+                            visibilityControllerListener
+                        )
+                    )
+                } else {
+                    add()
+                }
+                cell.width(buttonSize).height(buttonSize).spaceLeft(MARGIN)
             }
             addDeleteIfNeeded(buttonSize, style, rowIndex)
 
@@ -43,7 +63,7 @@ class Keyboard(
             row()
 
         }
-        return buttons
+        return keyboardButtons
     }
 
     private fun addSpaceIfNeeded(
@@ -60,7 +80,8 @@ class Keyboard(
             return
         }
 
-        val space = KeyboardButton(null, KeyboardButtonType.SPACE, style, listener)
+        val space =
+            KeyboardButton(null, KeyboardButtonType.SPACE, style, visibilityControllerListener)
         addLargeButton(space, buttonSize)
     }
 
@@ -78,7 +99,8 @@ class Keyboard(
             return
         }
 
-        val delete = KeyboardButton(null, KeyboardButtonType.DELETE, style, listener)
+        val delete =
+            KeyboardButton(null, KeyboardButtonType.DELETE, style, visibilityControllerListener)
         addLargeButton(delete, buttonSize)
     }
 
@@ -95,6 +117,25 @@ class Keyboard(
     }
 
     private fun calculateButtonSize() = ((Gdx.graphics.width - MARGIN) / 12f) - MARGIN
+
+    private class ButtonVisibility(val char: Char, var visible: Boolean = true)
+
+    private inner class VisibilityControllerListener(val listener: KeyboardListener) :
+        KeyboardListener {
+        override fun onButtonPressed(char: Char?, type: KeyboardButtonType) {
+            if (type == KeyboardButtonType.CHARACTER && willButtonsDisappear) {
+                buttons.forEach { row ->
+                    row.forEach {
+                        if (char == it.char) {
+                            it.visible = false
+                        }
+                    }
+                }
+                addButtons()
+            }
+            listener.onButtonPressed(char, type)
+        }
+    }
 
     companion object {
         private const val MARGIN = 25f
