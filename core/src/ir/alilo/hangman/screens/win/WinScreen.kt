@@ -1,4 +1,4 @@
-package ir.alilo.hangman.screens
+package ir.alilo.hangman.screens.win
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter

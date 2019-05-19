@@ -10,10 +10,13 @@ object Resources {
         val delete: String = "حذف".asPersianGlyph()
         val space: String = "فاصله".asPersianGlyph()
         val confirm: String = "تایید".asPersianGlyph()
+        val dogsShit: String = "گه سگ".asPersianGlyph()
     }
 
     object Sounds {
         const val congrats = "sounds/congrats.mp3"
+        const val yay = "sounds/yay.mp3"
+        const val nay = "sounds/nay.mp3"
     }
 
     object Fonts {

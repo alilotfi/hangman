@@ -1,5 +1,6 @@
 package ir.alilo.hangman.components
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -33,6 +34,7 @@ class KeyboardButton(
 
             return TextButtonStyle().apply {
                 this.font = font
+                fontColor = Color.BLACK
                 up = skinButton.getDrawable(Resources.Packs.Drawable.buttonsUp)
                 down = skinButton.getDrawable(Resources.Packs.Drawable.buttonsDown)
             }

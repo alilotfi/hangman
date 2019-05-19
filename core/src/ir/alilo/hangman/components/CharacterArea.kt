@@ -1,6 +1,7 @@
 package ir.alilo.hangman.components
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -46,6 +47,7 @@ class CharacterArea(
 
             return TextButtonStyle().apply {
                 this.font = font
+                fontColor = Color.BLACK
                 up = skinButton.getDrawable(Resources.Packs.Drawable.charAreaCharArea)
             }
         }
@@ -53,6 +55,7 @@ class CharacterArea(
         fun buildSpaceStyle(font: BitmapFont): TextButtonStyle {
             return TextButtonStyle().apply {
                 this.font = font
+                fontColor = Color.BLACK
             }
         }
     }

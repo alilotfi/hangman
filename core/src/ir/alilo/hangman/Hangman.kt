@@ -2,7 +2,7 @@ package ir.alilo.hangman
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color.BLACK
+import com.badlogic.gdx.graphics.Color.WHITE
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -26,7 +26,7 @@ class Hangman : Game() {
         val generator = FreeTypeFontGenerator(Gdx.files.internal(Resources.Fonts.yekan))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
         parameter.characters += ArUtils.getAllChars().toString("")
-        parameter.color = BLACK
+        parameter.color = WHITE
         parameter.minFilter = Texture.TextureFilter.Linear
         parameter.magFilter = Texture.TextureFilter.Linear
 

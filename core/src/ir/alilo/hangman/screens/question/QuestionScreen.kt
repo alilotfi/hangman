@@ -45,6 +45,7 @@ class QuestionScreen(private val hangman: Hangman) : ScreenAdapter(), KeyboardLi
     private fun buildConfirmButton(): Actor {
         val size = Gdx.graphics.width / 10f
         val style = KeyboardButton.buildStyle(hangman.largeFont)
+        style.fontColor = Color.BLACK
         val button = TextButton(Resources.Strings.confirm, style)
         button.setPosition((Gdx.graphics.width - size) / 2, (Gdx.graphics.height - size) / 2)
         button.setSize(size, size)

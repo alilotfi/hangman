@@ -2,26 +2,34 @@ package ir.alilo.hangman.screens.answer
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import ir.alilo.hangman.Hangman
+import ir.alilo.hangman.Resources
 import ir.alilo.hangman.components.Keyboard
 import ir.alilo.hangman.components.KeyboardButtonType
 import ir.alilo.hangman.components.KeyboardListener
 import ir.alilo.hangman.components.TextArea
-import ir.alilo.hangman.screens.WinScreen
+import ir.alilo.hangman.screens.lost.LostScreen
+import ir.alilo.hangman.screens.win.WinScreen
 
 class AnswerScreen(private val hangman: Hangman, private val text: String) : ScreenAdapter(),
     KeyboardListener {
     private lateinit var textArea: TextArea
     private lateinit var stage: Stage
+    private lateinit var yaySound: Sound
+    private lateinit var naySound: Sound
     private lateinit var wrongAttempts: TextButton
     private var wrongAttemptsCount = 0
 
     override fun show() {
+        yaySound = Gdx.audio.newSound(Gdx.files.internal(Resources.Sounds.yay))
+        naySound = Gdx.audio.newSound(Gdx.files.internal(Resources.Sounds.nay))
+
         val viewport = ScreenViewport()
         stage = Stage(viewport, hangman.batch)
 
@@ -50,6 +58,7 @@ class AnswerScreen(private val hangman: Hangman, private val text: String) : Scr
         val width = Gdx.graphics.width / 10f
         val style = TextButton.TextButtonStyle().apply {
             this.font = hangman.largeFont
+            fontColor = Color.BLACK
         }
         val wrongAttempts = TextButton("", style)
         wrongAttempts.setPosition(
@@ -76,11 +85,18 @@ class AnswerScreen(private val hangman: Hangman, private val text: String) : Scr
         char ?: throw IllegalArgumentException("Character of type CHARACTER should not be null")
         val revealed = textArea.revealCharacter(char)
         if (!revealed) {
+            naySound.play()
             ++wrongAttemptsCount
             wrongAttempts.setText("$wrongAttemptsCount")
-        }
-        if (revealed && textArea.isRevealed()) {
-            hangman.screen = WinScreen(hangman)
+
+            if (wrongAttemptsCount > 7) {
+                hangman.screen = LostScreen(hangman)
+            }
+        } else {
+            yaySound.play()
+            if (textArea.isRevealed()) {
+                hangman.screen = WinScreen(hangman)
+            }
         }
     }
 }
