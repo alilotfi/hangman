@@ -7,11 +7,16 @@ object Resources {
     private fun String.asPersianGlyph() = arFont.getText(this)
 
     object Strings {
+        const val keyboardFirstRow = "ضصثقفغعهخحجچ"
+        const val keyboardSecondRow = "شسیبلئاتنمکگ"
+        const val keyboardThirdRow = "ظطزرذدپو"
         val delete: String = "حذف".asPersianGlyph()
         val space: String = "فاصله".asPersianGlyph()
-        const val keyboardFirstRow = "ضصثقفغعهخحجچ"
-        const val keyboardSecondRow = "شسیبلآاتنمکگ"
-        const val keyboardThirdRow = "ظطزرذدپو"
+        val confirm: String = "تایید".asPersianGlyph()
+    }
+
+    object Sounds {
+        const val congrats = "sounds/congrats.mp3"
     }
 
     object Fonts {
@@ -30,6 +35,14 @@ object Resources {
             const val charAreaCharArea = "char_area"
             const val buttonsUp = "button_up"
             const val buttonsDown = "button_down"
+        }
+    }
+
+    object Effects {
+        const val flame = "particles/flame.p"
+
+        object Particles {
+            const val flameParticle = "particles"
         }
     }
 }

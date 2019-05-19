@@ -7,7 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import ir.alilo.hangman.Resources
 
 
-class Keyboard(font: BitmapFont, private val listener: KeyboardListener) : Table() {
+class Keyboard(
+    font: BitmapFont,
+    private val listener: KeyboardListener,
+    private val hasSpace: Boolean = true,
+    private val hasDelete: Boolean = true
+) : Table() {
     private val letters: List<List<Char>> = listOf(
         Resources.Strings.keyboardFirstRow.toList(),
         Resources.Strings.keyboardSecondRow.toList(),
@@ -25,17 +30,13 @@ class Keyboard(font: BitmapFont, private val listener: KeyboardListener) : Table
         val style = KeyboardButton.buildStyle(font)
         val buttons = mutableListOf<KeyboardButton>()
         letters.forEachIndexed { rowIndex, row ->
-            if (rowIndex == LAST_ROW_INDEX) {
-                addSpaceButton(buttonSize, style)
-            }
+            addSpaceIfNeeded(buttonSize, style, rowIndex)
             row.forEach { character ->
                 val button =
                     KeyboardButton(character, KeyboardButtonType.CHARACTER, style, listener)
                 add(button).width(buttonSize).height(buttonSize).spaceLeft(MARGIN)
             }
-            if (rowIndex == LAST_ROW_INDEX) {
-                addDeleteButton(buttonSize, style)
-            }
+            addDeleteIfNeeded(buttonSize, style, rowIndex)
 
             row()
             add().height(MARGIN)
@@ -45,16 +46,50 @@ class Keyboard(font: BitmapFont, private val listener: KeyboardListener) : Table
         return buttons
     }
 
-    private fun addSpaceButton(buttonSize: Float, style: TextButton.TextButtonStyle) {
+    private fun addSpaceIfNeeded(
+        buttonSize: Float,
+        style: TextButton.TextButtonStyle,
+        rowIndex: Int
+    ) {
+        if (rowIndex != LAST_ROW_INDEX) {
+            return
+        }
+
+        if (!hasSpace) {
+            addEmptyButton(buttonSize)
+            return
+        }
+
         val space = KeyboardButton(null, KeyboardButtonType.SPACE, style, listener)
-        add(space).width(buttonSize).colspan(2).width(2 * buttonSize + MARGIN)
+        addLargeButton(space, buttonSize)
+    }
+
+    private fun addDeleteIfNeeded(
+        buttonSize: Float,
+        style: TextButton.TextButtonStyle,
+        rowIndex: Int
+    ) {
+        if (rowIndex != LAST_ROW_INDEX) {
+            return
+        }
+
+        if (!hasDelete) {
+            addEmptyButton(buttonSize)
+            return
+        }
+
+        val delete = KeyboardButton(null, KeyboardButtonType.DELETE, style, listener)
+        addLargeButton(delete, buttonSize)
+    }
+
+    private fun addLargeButton(button: KeyboardButton, buttonSize: Float) {
+        add(button).width(buttonSize).colspan(2).width(2 * buttonSize + MARGIN)
             .height(buttonSize)
             .spaceLeft(MARGIN)
     }
 
-    private fun addDeleteButton(buttonSize: Float, style: TextButton.TextButtonStyle) {
-        val delete = KeyboardButton(null, KeyboardButtonType.DELETE, style, listener)
-        add(delete).width(buttonSize).colspan(2).width(2 * buttonSize + MARGIN)
+    private fun addEmptyButton(buttonSize: Float) {
+        add().width(buttonSize).colspan(2).width(2 * buttonSize + MARGIN)
             .height(buttonSize)
             .spaceLeft(MARGIN)
     }
